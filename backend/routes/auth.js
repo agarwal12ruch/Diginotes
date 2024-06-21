@@ -15,21 +15,23 @@ router.post("/createuser",[
     body("email","enter a valid email").isEmail(),
     body('password',"Password must be of 5 charactors").isLength({ min: 5 }),
 ],async(req, res) => {
+       let success=false;
         // Finds the validation errors in this request and wraps them in an object with handy functions
         const errors = validationResult(req);
+        
         if (!errors.isEmpty()) {
-          return res.status(400).json({ errors: errors.array() });
+          return res.status(400).json({ success,errors: errors.array() });
          }
       // check whether user with same email exits
       try{
       let user=await User.findOne({email:req.body.email})
       if(user){
-        return res.status(400).json({error:"user with this email alredy exists"})
+        return res.status(400).json({success,error:"user with this email alredy exists"})
       }
       // to generate a salt
       const salt=await bcrypt.genSalt(10);
       //password ecryption
-      seqp= await bcrypt.hash(req.body.password,salt)
+      const seqp= await bcrypt.hash(req.body.password,salt)
       // create a new user
       user =await User.create({
         name: req.body.name,
@@ -42,10 +44,11 @@ router.post("/createuser",[
         }
       }
       const authtoken=jwt.sign(data, JWT_SECRET);
-      res.json(authtoken)
+      success=true;
+      res.json({success,"auth-token":authtoken})
     }
     catch(err){
-      console.log(err);
+      console.log(err.message);
       res.status(500).send("some error occured");
     }
       // .then(user => res.json(user))
@@ -94,7 +97,7 @@ router.post("/login",[
 
 router.post("/getuser",fetchuser,async(req, res) => {
 try{
-    userId=req.user.id;
+    const userId=req.user.id;
     const user=await User.findById(userId).select("-password");
     res.send(user);
 }
