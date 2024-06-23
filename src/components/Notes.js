@@ -2,12 +2,22 @@ import React, { useEffect, useRef } from 'react'
 import { useContext } from 'react';
 import NoteContext from '../context/notes/NoteContext';
 import NoteItem from "../components/NoteItem"
-export default function Notes() {
+import { useNavigate } from 'react-router';
+export default function Notes(props) {
   const context = useContext(NoteContext);
   const { notes, getNote } = context;
+  let history=useNavigate();
   useEffect(() => {
-    getNote();
-  }, []);
+    if(localStorage.getItem("token")){
+      getNote();
+      console.log(localStorage.getItem('token'));
+
+    }
+   else{
+      history("/login")
+   }
+    
+  }, [history, getNote]);
   const ref=useRef(null);
   const updateNotes = (notes) => {
       ref.current.click();
@@ -39,7 +49,7 @@ export default function Notes() {
       <div className='row my-3'>
         <h2>Your Note</h2>
         {notes.map((note) => {
-          return <NoteItem key={note._id}  updateNotes={updateNotes} notes={note} />
+          return <NoteItem key={note._id}  updateNotes={updateNotes} applyalert={props.applyalert} notes={note} />
         })}
       </div>
     </>

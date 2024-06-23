@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import {useNavigate} from "react-router-dom"
-const Login = () => {
+const Login = (props) => {
     const [credentials, setCredentials] = useState({ email: "", password: "" });
     const history = useNavigate();
     const handleSubmit = async (e) => {
@@ -19,10 +19,12 @@ const Login = () => {
             // save the auth token and rediretct
             localStorage.setItem("token",json.authtoken);  // to redirect use history hook is used
             history("/")
+            props.applyalert("Logged in","success")
+            console.log(json.authtoken);
 
         }
         else{
-            alert("invalid credentials")
+            props.applyalert("Invalid credentials","danger")
         }
 
     }

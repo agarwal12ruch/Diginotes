@@ -6,7 +6,9 @@ export default function NoteItem(props) {
   const { deletenote } = context; //calling delete function from notesstate context
   const { notes, updateNotes } = props;
   const handledelete = () => { // to delete note of a given id on clicking on a trash button
-    deletenote(notes._id)
+    deletenote(notes._id);
+    // props.applyalert("deleted successfully","success")
+
   }
   const handleedit = () => {
     

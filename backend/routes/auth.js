@@ -77,7 +77,7 @@ router.post("/login",[
       const passwordCompare= await bcrypt.compare(password,user.password);
       if(!passwordCompare){
         success=false;
-        return res.send({success,error:"Please login with valid credentials"})
+        return res.json({success,error:"Please login with valid credentials"})
       }
       const data={
         user:{
